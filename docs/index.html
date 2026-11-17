@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Usability Scale (SUS) Questionnaire | Weber State Class Registration Study</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23492365%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2714%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27Arial%27%3ESUS%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Accessible 10 item System Usability Scale questionnaire used in a usability study of the Weber State University Register for Classes flow.">
+<style>
+  :root {
+    --text: #1b1b1b;        /* 17.2:1 on white */
+    --muted: #474747;       /* 9.3:1 on white */
+    --bg: #ffffff;
+    --panel: #f6f4f8;       /* text on panel stays above 15:1 */
+    --accent: #492365;      /* 12.3:1 on white */
+    --accent-text: #ffffff; /* 12.3:1 on accent */
+    --border: #6b6b6b;      /* 5.3:1 on white, meets 3:1 non text contrast */
+    --error: #a4161a;       /* 7.7:1 on white */
+    --ok: #1d5b2b;          /* 8.1:1 on white */
+    --focus: #492365;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 100%; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.55;
+    color: var(--text);
+    background: var(--bg);
+  }
+  .skip-link {
+    position: absolute; left: 0.5rem; top: -3rem;
+    background: var(--accent); color: var(--accent-text);
+    padding: 0.6rem 1rem; border-radius: 4px; z-index: 10;
+  }
+  .skip-link:focus { top: 0.5rem; }
+  header {
+    background: var(--accent); color: var(--accent-text);
+    padding: 1.5rem 1rem;
+  }
+  header .wrap, main { max-width: 52rem; margin: 0 auto; }
+  header h1 { margin: 0 0 0.25rem; font-size: 1.6rem; line-height: 1.25; }
+  header p { margin: 0; }
+  main { padding: 1.5rem 1rem 3rem; }
+  h2 { font-size: 1.25rem; margin: 2rem 0 0.75rem; }
+  .instructions {
+    background: var(--panel); border-left: 6px solid var(--accent);
+    padding: 1rem 1.25rem; border-radius: 4px;
+  }
+  .instructions p { margin: 0.4rem 0; }
+  .field { margin: 1.25rem 0; }
+  .field label { display: block; font-weight: 600; margin-bottom: 0.35rem; }
+  .hint { color: var(--muted); font-size: 0.95rem; margin: 0 0 0.4rem; }
+  input[type="text"] {
+    font: inherit; padding: 0.55rem 0.7rem; width: 100%; max-width: 16rem;
+    border: 2px solid var(--border); border-radius: 4px; color: var(--text); background: #fff;
+  }
+  fieldset.item {
+    border: 2px solid var(--border); border-radius: 6px;
+    margin: 0 0 1rem; padding: 0.9rem 1rem 1rem;
+  }
+  fieldset.item.invalid { border-color: var(--error); border-width: 3px; }
+  legend {
+    font-weight: 600; padding: 0 0.35rem; font-size: 1.05rem;
+  }
+  legend .num { color: var(--muted); font-weight: 600; margin-right: 0.35rem; }
+  .scale {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem; margin-top: 0.6rem;
+  }
+  .opt { position: relative; }
+  .opt input {
+    position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0;
+  }
+  .opt label {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    gap: 0.15rem; min-height: 4.25rem; padding: 0.55rem 0.25rem;
+    border: 2px solid var(--border); border-radius: 6px; background: #fff;
+    cursor: pointer; text-align: center; font-size: 0.9rem; color: var(--text);
+  }
+  .opt label .n { font-size: 1.3rem; font-weight: 700; line-height: 1.1; }
+  .opt input:checked + label {
+    background: var(--accent); color: var(--accent-text); border-color: var(--accent);
+  }
+  .opt input:checked + label::after { content: "Selected"; font-size: 0.75rem; }
+  /* WCAG SC 2.4.7 visible focus: a thick ring offset from the control */
+  .opt input:focus-visible + label,
+  input[type="text"]:focus-visible,
+  button:focus-visible,
+  a:focus-visible,
+  .error-summary:focus,
+  main:focus-visible,
+  .results:focus {
+    outline: 4px solid var(--focus);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 7px #ffffff;
+  }
+  .opt label:hover { border-color: var(--accent); }
+  .item-error { color: var(--error); font-weight: 600; margin: 0.5rem 0 0; min-height: 0; }
+  .item-error:empty { display: none; }
+  .error-summary {
+    border: 3px solid var(--error); border-radius: 6px; padding: 1rem 1.25rem;
+    margin: 1rem 0; color: var(--text); background: #fff;
+  }
+  .error-summary h2 { color: var(--error); margin-top: 0; }
+  .error-summary a { color: var(--error); font-weight: 600; }
+  .error-summary[hidden] { display: none; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+  button {
+    font: inherit; font-weight: 600; padding: 0.7rem 1.3rem; border-radius: 6px;
+    border: 2px solid var(--accent); cursor: pointer;
+  }
+  button.primary { background: var(--accent); color: var(--accent-text); }
+  button.secondary { background: #fff; color: var(--accent); }
+  .results {
+    margin-top: 2rem; border: 2px solid var(--ok); border-radius: 6px; padding: 1.25rem;
+  }
+  .results[hidden] { display: none; }
+  .results h2 { margin-top: 0; color: var(--ok); }
+  .score { font-size: 2.4rem; font-weight: 800; margin: 0.25rem 0; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; font-size: 0.95rem; }
+  caption { text-align: left; font-weight: 600; margin-bottom: 0.4rem; }
+  th, td { border: 1px solid var(--border); padding: 0.4rem 0.55rem; text-align: left; }
+  th { background: var(--panel); }
+  .visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  details { margin-top: 1.25rem; }
+  summary { cursor: pointer; font-weight: 600; }
+  footer { color: var(--muted); font-size: 0.9rem; max-width: 52rem; margin: 0 auto; padding: 0 1rem 2rem; }
+  @media (max-width: 34rem) {
+    .scale { grid-template-columns: 1fr; gap: 0.4rem; }
+    .opt label { flex-direction: row; justify-content: flex-start; gap: 0.75rem;
+                 min-height: 2.9rem; padding: 0.45rem 0.9rem; font-size: 1rem; text-align: left; }
+    .opt input:checked + label::after { margin-left: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <h1>System Usability Scale (SUS) Questionnaire</h1>
+    <p>Weber State University class registration usability study</p>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="instructions" aria-labelledby="instr-heading">
+    <h2 id="instr-heading" style="margin-top:0">Before you begin</h2>
+    <p>Please answer each statement based on the tasks you just completed in the class registration system.</p>
+    <p>Choose one number for every statement. 1 means <strong>Strongly Disagree</strong> and 5 means <strong>Strongly Agree</strong>. Go with your first reaction; there are no right or wrong answers.</p>
+    <p>This questionnaire rates the software, not you. It takes about 2 minutes. All 10 statements need an answer.</p>
+    <p class="hint">Keyboard users: press Tab to move between statements and use the arrow keys to change your rating within a statement.</p>
+  </section>
+
+  <div id="error-summary" class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1" hidden>
+    <h2 id="error-summary-heading">Some statements still need an answer</h2>
+    <ul id="error-list"></ul>
+  </div>
+
+  <form id="sus-form" novalidate aria-describedby="instr-heading">
+    <div class="field">
+      <label for="participant-id">Participant ID</label>
+      <p class="hint" id="pid-hint">Your moderator will give you this code (for example P01). Do not enter your name.</p>
+      <input type="text" id="participant-id" name="participant_id" autocomplete="off"
+             aria-describedby="pid-hint pid-error" aria-required="true" maxlength="10">
+      <p class="item-error" id="pid-error" aria-live="polite"></p>
+    </div>
+
+    <h2>Statements</h2>
+    <div id="items"></div>
+
+    <div class="actions">
+      <button type="submit" class="primary">Submit responses</button>
+      <button type="reset" class="secondary" id="reset-btn">Clear all answers</button>
+    </div>
+  </form>
+
+  <section id="results" class="results" tabindex="-1" aria-labelledby="results-heading" hidden>
+    <h2 id="results-heading">Thank you. Your responses were recorded.</h2>
+    <p>Please let your moderator know you are finished.</p>
+    <div id="live-score" role="status" aria-live="polite"></div>
+
+    <details>
+      <summary>Moderator view: score breakdown and export</summary>
+      <table>
+        <caption>Item level score contributions</caption>
+        <thead>
+          <tr><th scope="col">Item</th><th scope="col">Polarity</th><th scope="col">Raw rating (1 to 5)</th><th scope="col">Contribution (0 to 4)</th></tr>
+        </thead>
+        <tbody id="breakdown"></tbody>
+      </table>
+      <div class="actions">
+        <button type="button" class="primary" id="dl-one">Download this response (CSV)</button>
+        <button type="button" class="secondary" id="dl-all">Download all responses saved on this device (CSV)</button>
+        <button type="button" class="secondary" id="next">Start next participant</button>
+      </div>
+      <p class="hint" id="save-note"></p>
+    </details>
+  </section>
+</main>
+
+<footer>
+  <p>Items reproduced from Brooke, J. (1996). SUS: A "quick and dirty" usability scale. In P. W. Jordan et al. (Eds.), <em>Usability Evaluation in Industry</em>. London: Taylor &amp; Francis. Responses stay in this browser unless the moderator downloads them; nothing is sent to a server.</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var ITEMS = [
+    "I think that I would like to use this system frequently.",
+    "I found the system unnecessarily complex.",
+    "I thought the system was easy to use.",
+    "I think that I would need the support of a technical person to be able to use this system.",
+    "I found the various functions in this system were well integrated.",
+    "I thought there was too much inconsistency in this system.",
+    "I would imagine that most people would learn to use this system very quickly.",
+    "I found the system very cumbersome to use.",
+    "I felt very confident using the system.",
+    "I needed to learn a lot of things before I could get going with this system."
+  ];
+  var STORE_KEY = "sus_responses_v1";
+
+  var container = document.getElementById("items");
+  var form = document.getElementById("sus-form");
+  var summary = document.getElementById("error-summary");
+  var errorList = document.getElementById("error-list");
+  var results = document.getElementById("results");
+  var lastRecord = null;
+
+  // Build the 10 items: one fieldset + legend per statement, one native radio group per item.
+  // Native radios sharing a name give arrow key navigation inside the group and a single Tab stop.
+  ITEMS.forEach(function (text, i) {
+    var n = i + 1;
+    var fs = document.createElement("fieldset");
+    fs.className = "item";
+    fs.id = "item-" + n;
+
+    var lg = document.createElement("legend");
+    lg.id = "q" + n + "-legend";
+    lg.innerHTML = '<span class="num">' + n + '.</span>' + text;
+    fs.appendChild(lg);
+
+    var scale = document.createElement("div");
+    scale.className = "scale";
+    for (var v = 1; v <= 5; v++) {
+      var id = "q" + n + "-" + v;
+      var wrap = document.createElement("div");
+      wrap.className = "opt";
+      var input = document.createElement("input");
+      input.type = "radio";
+      input.name = "q" + n;
+      input.id = id;
+      input.value = String(v);
+      input.setAttribute("aria-describedby", "q" + n + "-error");
+      if (v === 1) input.setAttribute("aria-required", "true");
+      var label = document.createElement("label");
+      label.setAttribute("for", id);
+      var anchor = v === 1 ? "Strongly Disagree" : (v === 5 ? "Strongly Agree" : "");
+      label.innerHTML = '<span class="n">' + v + '</span>' +
+        (anchor ? '<span>' + anchor + '</span>' : '<span class="visually-hidden">out of 5</span>');
+      wrap.appendChild(input);
+      wrap.appendChild(label);
+      scale.appendChild(wrap);
+    }
+    fs.appendChild(scale);
+
+    var err = document.createElement("p");
+    err.className = "item-error";
+    err.id = "q" + n + "-error";
+    err.setAttribute("aria-live", "polite");
+    fs.appendChild(err);
+
+    container.appendChild(fs);
+  });
+
+  // Clear an item's error as soon as it is answered.
+  container.addEventListener("change", function (e) {
+    if (e.target && e.target.type === "radio") {
+      var n = e.target.name.slice(1);
+      document.getElementById("q" + n + "-error").textContent = "";
+      document.getElementById("item-" + n).classList.remove("invalid");
+      if (!summary.hidden) refreshSummary(false);
+    }
+  });
+
+  function getRating(n) {
+    var c = form.querySelector('input[name="q' + n + '"]:checked');
+    return c ? parseInt(c.value, 10) : null;
+  }
+
+  function validate() {
+    var missing = [];
+    var pid = document.getElementById("participant-id");
+    var pidErr = document.getElementById("pid-error");
+    if (!pid.value.trim()) {
+      missing.push({ id: "participant-id", label: "Participant ID" });
+      pidErr.textContent = "Error: enter the participant ID your moderator gave you.";
+      pid.setAttribute("aria-invalid", "true");
+    } else {
+      pidErr.textContent = "";
+      pid.removeAttribute("aria-invalid");
+    }
+    for (var n = 1; n <= 10; n++) {
+      var fs = document.getElementById("item-" + n);
+      var err = document.getElementById("q" + n + "-error");
+      if (getRating(n) === null) {
+        missing.push({ id: "q" + n + "-1", label: "Statement " + n });
+        err.textContent = "Error: choose a rating from 1 to 5 for statement " + n + ".";
+        fs.classList.add("invalid");
+      } else {
+        err.textContent = "";
+        fs.classList.remove("invalid");
+      }
+    }
+    return missing;
+  }
+
+  function refreshSummary(moveFocus) {
+    var missing = validate();
+    errorList.innerHTML = "";
+    if (!missing.length) { summary.hidden = true; return missing; }
+    missing.forEach(function (m) {
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "#" + m.id;
+      a.textContent = m.label + " is not answered";
+      a.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        var target = document.getElementById(m.id);
+        target.focus();
+        target.scrollIntoView({ block: "center" });
+      });
+      li.appendChild(a);
+      errorList.appendChild(li);
+    });
+    document.getElementById("error-summary-heading").textContent =
+      missing.length + (missing.length === 1 ? " item still needs" : " items still need") + " an answer";
+    summary.hidden = false;
+    if (moveFocus) summary.focus();
+    return missing;
+  }
+
+  // SUS scoring: odd items contribute (rating - 1), even items contribute (5 - rating); sum x 2.5.
+  function score(ratings) {
+    var contributions = ratings.map(function (r, i) {
+      return (i % 2 === 0) ? r - 1 : 5 - r;
+    });
+    var sum = contributions.reduce(function (a, b) { return a + b; }, 0);
+    return { contributions: contributions, sum: sum, sus: sum * 2.5 };
+  }
+
+  // Adjective and acceptability bands (Bangor, Kortum and Miller 2008, 2009); same table as the logging workbook.
+  function adjective(s) {
+    if (s >= 84.1) return "Excellent";
+    if (s >= 72.6) return "Good";
+    if (s >= 51.7) return "OK";
+    if (s >= 25) return "Poor";
+    return "Worst imaginable";
+  }
+  function acceptability(s) {
+    if (s >= 70) return "Acceptable";
+    if (s >= 50) return "Marginal";
+    return "Not acceptable";
+  }
+  // Percentile rank: normal approximation of the Sauro and Lewis SUS database (mean 68, SD 12.5).
+  function erf(x) {
+    var t = 1 / (1 + 0.3275911 * Math.abs(x));
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return x >= 0 ? y : -y;
+  }
+  function percentile(s) {
+    var p = 50 * (1 + erf((s - 68) / (12.5 * Math.SQRT2)));
+    return Math.max(1, Math.min(99, Math.round(p)));
+  }
+  function ordinal(n) {
+    var v = n % 100;
+    if (v >= 11 && v <= 13) return n + "th";
+    return n + (["th", "st", "nd", "rd"][n % 10] || "th");
+  }
+  function grade(s) {
+    if (s >= 84.1) return "A+"; if (s >= 80.8) return "A"; if (s >= 78.9) return "A-";
+    if (s >= 77.2) return "B+"; if (s >= 74.1) return "B"; if (s >= 72.6) return "B-";
+    if (s >= 71.1) return "C+"; if (s >= 65.0) return "C"; if (s >= 62.7) return "C-";
+    if (s >= 51.7) return "D"; return "F";
+  }
+
+  function toCsv(records) {
+    var header = ["participant_id", "submitted_at"];
+    for (var i = 1; i <= 10; i++) header.push("Q" + i);
+    header.push("contribution_sum", "SUS_score", "percentile", "grade", "adjective");
+    var lines = [header.join(",")];
+    records.forEach(function (r) {
+      var safeId = '"' + String(r.participant_id).replace(/"/g, '""') + '"';
+      lines.push([safeId, r.submitted_at].concat(r.ratings, [r.sum, r.sus, percentile(r.sus), grade(r.sus), '"' + adjective(r.sus) + '"']).join(","));
+    });
+    return lines.join("\r\n") + "\r\n";
+  }
+
+  function download(name, text) {
+    var blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 0);
+  }
+
+  function loadAll() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || "[]"); } catch (e) { return []; }
+  }
+  function saveRecord(rec) {
+    try {
+      var all = loadAll(); all.push(rec);
+      localStorage.setItem(STORE_KEY, JSON.stringify(all));
+      return all.length;
+    } catch (e) { return -1; }
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var missing = refreshSummary(true);
+    if (missing.length) return;
+
+    var ratings = [];
+    for (var n = 1; n <= 10; n++) ratings.push(getRating(n));
+    var s = score(ratings);
+    lastRecord = {
+      participant_id: document.getElementById("participant-id").value.trim(),
+      submitted_at: new Date().toISOString(),
+      ratings: ratings, sum: s.sum, sus: s.sus
+    };
+    var count = saveRecord(lastRecord);
+
+    var tbody = document.getElementById("breakdown");
+    tbody.innerHTML = "";
+    ratings.forEach(function (r, i) {
+      var tr = document.createElement("tr");
+      tr.innerHTML = "<th scope='row'>Q" + (i + 1) + "</th><td>" +
+        (i % 2 === 0 ? "Positive (rating minus 1)" : "Negative (5 minus rating)") +
+        "</td><td>" + r + "</td><td>" + s.contributions[i] + "</td>";
+      tbody.appendChild(tr);
+    });
+    var tr = document.createElement("tr");
+    tr.innerHTML = "<th scope='row'>Total</th><td colspan='2'>Sum of contributions x 2.5</td><td>" +
+      s.sum + " x 2.5 = " + s.sus + "</td>";
+    tbody.appendChild(tr);
+
+    document.getElementById("live-score").innerHTML =
+      '<p class="score">SUS score: ' + s.sus.toFixed(1) + " / 100</p>" +
+      "<p>Percentile rank: about " + ordinal(percentile(s.sus)) + " (higher than " + percentile(s.sus) +
+      "% of systems in the Sauro and Lewis benchmark). Adjective rating: " + adjective(s.sus) +
+      ". Acceptability: " + acceptability(s.sus) + ". Curved grade: " + grade(s.sus) + ". The cross industry average is 68 (50th percentile).</p>";
+    document.getElementById("save-note").textContent = count > 0
+      ? count + " response(s) saved in this browser. Download them before clearing browser data."
+      : "This browser blocked local saving. Download this response now so it is not lost.";
+
+    form.hidden = true;
+    results.hidden = false;
+    results.focus();
+  });
+
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    summary.hidden = true;
+    setTimeout(validateClear, 0);
+  });
+  function validateClear() {
+    document.querySelectorAll(".item-error").forEach(function (p) { p.textContent = ""; });
+    document.querySelectorAll("fieldset.item").forEach(function (f) { f.classList.remove("invalid"); });
+    document.getElementById("participant-id").removeAttribute("aria-invalid");
+  }
+
+  document.getElementById("dl-one").addEventListener("click", function () {
+    if (lastRecord) download("SUS_" + lastRecord.participant_id.replace(/[^A-Za-z0-9_-]/g, "") + ".csv", toCsv([lastRecord]));
+  });
+  document.getElementById("dl-all").addEventListener("click", function () {
+    var all = loadAll();
+    download("SUS_all_responses.csv", toCsv(all.length ? all : (lastRecord ? [lastRecord] : [])));
+  });
+  document.getElementById("next").addEventListener("click", function () {
+    form.reset(); validateClear();
+    results.hidden = true; form.hidden = false;
+    window.scrollTo(0, 0);
+    document.getElementById("participant-id").focus();
+  });
+})();
+</script>
+</body>
+</html>

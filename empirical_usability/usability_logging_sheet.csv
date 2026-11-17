@@ -1,0 +1,11 @@
+Participant_ID,Session_Date,Moderator,Device,Browser,Assistive_Tech,Task_ID,Task_Order,Start_Timestamp,M1_Time,M2_Time,M3_Time,End_Timestamp,M1_sec,M2_sec,M3_sec,Task_Time_sec,Task_Success,Assist_Count,Nav_Missteps,Dead_Clicks,Input_Errors,Error_Count,System_Faults,SEQ_Rating,Integrity_Flag,Facial_Expressions,Verbalized_Friction,Physical_Hesitation,Ergonomic_Posture,Moderator_Prompts_Used,Notes
+P01,,,,,,T1,1,,,,,,,,,,,,,,,,,,,,,,,,
+P01,,,,,,T2,2,,,,,,,,,,,,,,,,,,,,,,,,
+P02,,,,,,T2,1,,,,,,,,,,,,,,,,,,,,,,,,
+P02,,,,,,T1,2,,,,,,,,,,,,,,,,,,,,,,,,
+P03,,,,,,T1,1,,,,,,,,,,,,,,,,,,,,,,,,
+P03,,,,,,T2,2,,,,,,,,,,,,,,,,,,,,,,,,
+P04,,,,,,T2,1,,,,,,,,,,,,,,,,,,,,,,,,
+P04,,,,,,T1,2,,,,,,,,,,,,,,,,,,,,,,,,
+P05,,,,,,T1,1,,,,,,,,,,,,,,,,,,,,,,,,
+P05,,,,,,T2,2,,,,,,,,,,,,,,,,,,,,,,,,

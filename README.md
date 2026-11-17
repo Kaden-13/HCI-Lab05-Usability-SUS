@@ -16,17 +16,6 @@
 | `empirical_usability/usability_logging_sheet.xlsx` | Observation logger: task log with sub task milestone timestamps, an error log that categorizes and counts errors automatically, integrity checks, SUS scoring with percentile, grade, adjective, and acceptability, and a summary tab |
 | `empirical_usability/usability_logging_sheet.csv` | Same task log as a plain CSV for tools that cannot open .xlsx |
 | `empirical_usability/error_log.csv` | Blank per error log in CSV form |
-| `scripts/score_sus.py` | Command line scorer: re-scores survey CSV exports from raw ratings and prints percentile, grade, adjective, flags, mean, and 95% CI |
-
-### Rubric alignment
-
-| Rubric criterion | Where it is addressed |
-|---|---|
-| Moderator script and ethical protocol | [Step 2](#step-2-moderator-script-and-informed-consent-protocol): consent briefing, CTA instructions, non directive prompt bank, cue bias checked task cards, [recovery scripts for stressed users](#26-recovery-scripts-for-stressed-or-distressed-participants), [ethical debrief](#27-ethical-debriefing-procedure) |
-| Metric operationalization and logger design | [Step 3](#step-3-performance-metrics-and-data-logger-sheet) and the workbook: operational definitions, sub task timestamps (M1 to M3), automated error categorization, integrity checks, qualitative fields, summary statistics |
-| SUS instrument and scoring blueprint | [Step 4](#step-4-system-usability-scale-sus-instrument), `docs/index.html`, `SUS_Responses` tab, `scripts/score_sus.py`: canonical items, scoring formula, percentile curve, curved grade, adjective and acceptability ratings |
-| Accessibility and form architecture | [Step 5](#step-5-accessibility-first-survey-and-environment-audit): axe-core 0 violations in 3 states, Lighthouse accessibility 100, custom focus styling, keyboard navigable rating matrix |
-| Post mortem metacognition | [Post mortem](#post-mortem-reflection): response bias theory, experimenter bias, front end data integrity, self critique |
 
 ### Table of contents
 1. [Study scope and participant screener](#step-1-study-scope-and-participant-screener)
@@ -43,7 +32,7 @@
 
 ### 1.1 Study goals
 
-Earlier phases of this project (Phase 1 Usability Audit, Lab 03 Cognitive Audit, Phase 2 IA Blueprint) found problems in the Register for Classes flow through expert review: search results that keyboard users cannot reach, vague error messages when a section is full, and dense results tables. This study collects **empirical benchmark data from real users** so the team can measure how much those problems actually cost in time, errors, and perceived usability before any redesign.
+Earlier phases of this project (Phase 1 Usability Audit, Lab 03 Cognitive Audit, Phase 2 IA Blueprint) found problems in the Register for Classes flow through expert review: search results that keyboard users cannot reach, vague error messages when a section is full, and dense results tables. (See my [Contextual-Research](https://github.com/Kaden-13/Contextual-Research) repo for the Phase 1 and Phase 2 work.) This study collects **empirical benchmark data from real users** so the team can measure how much those problems actually cost in time, errors, and perceived usability before any redesign.
 
 **Research questions**
 1. Can students independently find and enroll in a specific open section, and how long does it take?
@@ -223,7 +212,7 @@ Given only if (a) the participant has made no forward progress for 120 seconds, 
 
 No other hints are allowed: no pointing, no naming menus or buttons, no "almost", no "you're close".
 
-**Recovery scripts (R1 to R6)** for stressed participants are in [Section 2.6](#26-recovery-scripts-for-stressed-or-distressed-participants). They lower stress without giving task hints and are logged by code the same way.
+**Recovery scripts (R1 to R3)** for stressed participants are in [Section 2.6](#26-recovery-scripts-for-stressed-or-distressed-participants). They lower stress without giving task hints and are logged by code the same way.
 
 **Terminal failure (Task_Success = 0)** when the participant says "Done" at a wrong end state, gives up, or reaches the 300 second cap. At the cap, say: "Thank you, that's all the time for this one. Let's move on." Then ask the SEQ as normal.
 
@@ -284,49 +273,28 @@ The cards deliberately avoid the interface's exact labels. The Register for Clas
 
 ### 2.6 Recovery scripts for stressed or distressed participants
 
-Usability sessions can make people feel tested even when told otherwise, and registration is tied to real stakes (graduation, financial aid). The moderator watches for stress signals: repeated apologies, self blame ("I'm so bad at this"), sighing, tense posture, a shaky or rising voice, or going completely silent for a long time. The goal of each script is to lower stress **without** giving task hints, so the data stays clean.
+Registration has real stakes for students, so people can feel tested even after being told they aren't. If a participant starts apologizing, blaming themselves, sighing a lot, or going quiet and tense, the moderator uses one of these. None of them give hints about the task.
 
-| Code | Situation | Exact script | Data handling |
+| Code | Situation | What to say | How to log it |
 |---|---|---|---|
-| R1 | Mild frustration or self blame | "You're not doing anything wrong. When something is confusing, that's the website's fault, and it's exactly what we need to find." | Log R1 in prompts column; timer keeps running; does not change success |
-| R2 | Visible stress, wants to give up | "It's completely fine to stop this one. Would you like to keep trying, or move on?" Participant's choice is followed with no pressure either way. | If they stop: End_Timestamp now, Task_Success 0, note "participant chose to stop" |
-| R3 | Strong distress, upset, or asks to stop the session | "Let's pause here. You don't need to do anything else. Would you like some water or a minute to yourself?" Stop the timer and the recording. After a break, offer once: "We can continue, or we can end the session now. Either is completely fine, and nothing changes either way." | Task logged as 0 with "session paused"; if they end the session, go straight to the debrief and offer withdrawal of data |
-| R4 | Participant asks "Did I do okay?" or "Was that right?" | During tasks: N3. After all tasks: "Everything you did was helpful. The places you got stuck show us what needs fixing." | No score or right answer is ever revealed |
-| R5 | Real registration worry (for example, fears they changed their real schedule) | Stop the task. "Let's check together right now." Moderator helps verify the account, undoes any accidental change, and confirms nothing real was affected before going on. | Task ends; Task_Success 0; note "stopped to protect participant's real account" |
-| R6 | Technical failure (portal down, timeout, crash) | "That's a problem with the website, not anything you did. Give me a moment to reset it." | Log SYS in Error_Log; if the reset takes more than 60 s, the attempt is excluded from timing analysis |
+| R1 | Frustration or self blame | "You're not doing anything wrong. If something is confusing, that's on the website, and that's what we're trying to find." | Log R1; timer keeps running; success not affected |
+| R2 | Wants to give up, or is clearly upset | "It's totally fine to stop this one. Do you want to keep trying or move on?" If they seem really upset, pause the session and offer to end it with no penalty. | If they stop: log End time, success 0, note "chose to stop" |
+| R3 | Portal error, timeout, or crash | "That's a problem with the website, not you. Give me a second to reset it." | Log SYS in Error_Log; if the reset takes over 60 s, leave the attempt out of timing |
 
-Participant wellbeing always outranks data quality. A lost data point is acceptable; a participant who leaves feeling judged is not.
+If a participant ever worries they changed their real schedule, stop the task and check the account together right away. Their wellbeing comes before the data.
 
-### 2.7 Ethical debriefing procedure
+### 2.7 Debrief
 
-The debrief happens after the SUS and before the participant leaves, even if the session ended early.
+The debrief happens after the SUS, even if the session ended early.
 
-**Step 1: Open floor**
-> "That's everything for the tasks. Is there anything about the website you'd like to tell me that we didn't get to?"
+1. **Open floor:** "That's it for the tasks. Anything about the website you want to tell me that we didn't get to?"
+2. **Explain the study:** "Now I can tell you more. Earlier reviews of this site found problems like a vague message when a class is full. Today was about measuring how much those problems actually slow people down. I stayed quiet so I wouldn't influence you."
+3. **Reassure and check in:** "Anywhere you got stuck is useful info about the website, not you. How are you feeling after that?"
+4. **Data rights:** "You're only identified as P0__. The recording stays on an encrypted drive and gets deleted at the end of the semester. If you change your mind about us keeping your data, email me with your code and I'll delete it, no reason needed." *(Hand them a card with their code and my school email.)*
+5. **Check their real schedule** (live portal only): "Let's double check your real schedule so we know nothing changed."
+6. **Thank them:** "Thanks so much for your time. This will help make registration easier for other students."
 
-**Step 2: Explain the purpose fully**
-> "Now that we're done, I can tell you more about what we were looking at. We've been studying the class registration site for a while, and earlier reviews found problems like a vague message when a class is full and parts of the results that are hard to reach with a keyboard. Today's session measured how much those problems actually slow people down. I stayed quiet during the tasks only so I wouldn't influence you."
-
-**Step 3: Normalize the experience**
-> "Every place you hesitated or got stuck is useful data about the website. Most people run into the same spots, and that's exactly what we were hoping to find."
-
-**Step 4: Check on the participant**
-> "How are you feeling after that? Was anything about today uncomfortable?"
-
-*If they mention stress, acknowledge it and thank them for their patience. If the session touched a real registration problem they have, point them to the Weber State registrar or their advisor. The moderator does not give registration advice beyond that.*
-
-**Step 5: Restate data rights**
-> "A reminder about your data: you're only identified as P0__. The recording stays on an encrypted drive, any personal information on screen will be blurred, and everything is deleted at the end of the semester. **You can still withdraw.** If you change your mind today or any time before the end of the semester, email me with your participant code and I'll delete your recording, notes, and survey answers. You don't have to give a reason."
-
-*Hand over a printed card with the participant code, the moderator's school email, the deletion deadline, and a one line study description.*
-
-**Step 6: Confirm real account state** (live portal sessions only)
-> "Before you go, let's double check your real schedule together so we know nothing changed by accident."
-
-**Step 7: Thank and close**
-> "Thank you so much for your time. What you showed us today will help make registration easier for other students."
-
-*After the participant leaves: stop the recording if it is still running, note any distress or protocol deviations in the Notes column, download the SUS CSV, and move the recording to the encrypted drive.*
+*Afterward: stop the recording, write down anything unusual in Notes, download the SUS CSV, and move the recording to the encrypted drive.*
 
 ---
 
@@ -340,7 +308,7 @@ The logger is `empirical_usability/usability_logging_sheet.xlsx` (plain `.csv` c
 | **Task_Log** | One row per participant per task, pre filled for P01 to P05 with counterbalanced order. Captures start, three sub task milestones, and end times; calculates elapsed seconds; pulls error counts from Error_Log; runs integrity checks |
 | **Error_Log** | One row per error, logged live. The moderator picks a code; category, user error status, and seconds since task start fill in automatically |
 | **SUS_Responses** | Raw Q1 to Q10 ratings; per item contributions, SUS score, percentile, curved grade, adjective, acceptability, and response pattern flags by formula |
-| **Summary** | Per task completion rate with adjusted Wald 95% CI, mean times (overall, successful only, and per milestone), errors by category, mean SEQ, integrity failures, and SUS mean, SD, CI, percentile, grade, and adjective |
+| **Summary** | Per task completion rate, average times (overall, successful only, and per milestone), errors by category, average SEQ, rows that need fixing, and the average SUS with its percentile, grade, and adjective |
 | **Milestones** | Definition of M1, M2, M3 for each task |
 | **Error_Codes** | Error taxonomy used for automatic categorization |
 | **SUS_Benchmarks** | Grade, adjective, and acceptability lookup tables with sources |
@@ -356,7 +324,7 @@ The logger is `empirical_usability/usability_logging_sheet.xlsx` (plain `.csv` c
 | `End_Timestamp` | hh:mm:ss | **Terminal user action:** participant says "Done", says they give up, or the 300 s cap is reached. |
 | `M1_sec` to `M3_sec` | Int (formula) | Seconds from Start to each milestone. Shows *where* in the flow time is lost. |
 | `Task_Time_sec` | Int (formula) | End minus Start in seconds. The timer is never paused for think aloud or prompts. |
-| `Task_Success` | 1 / 0.5 / 0 | **1** independent completion at the correct end state. **0.5** correct end state reached after an assist prompt (A1 or A2). **0** terminal failure: wrong end state, gave up, timed out, or stopped for wellbeing (R2, R3, R5). |
+| `Task_Success` | 1 / 0.5 / 0 | **1** independent completion at the correct end state. **0.5** correct end state reached after an assist prompt (A1 or A2). **0** terminal failure: wrong end state, gave up, timed out, or stopped for wellbeing (R2). |
 | `Assist_Count` | Int | Number of A level prompts given. |
 | `Nav_Missteps`, `Dead_Clicks`, `Input_Errors` | Int (formula) | Counted automatically from Error_Log by code. |
 | `Error_Count` | Int (formula) | Nav_Missteps + Dead_Clicks + Input_Errors. System faults are excluded. |
@@ -392,10 +360,7 @@ The moderator logs each error as it happens with three quick entries: participan
 
 Each Error_Log row automatically gets its category name, whether it counts as a user error, and **seconds since task start** (looked up from the matching Task_Log row through a `Participant|Task` key). Task_Log counts each category with `COUNTIFS`, so the moderator never tallies by hand. Each error also gets a Nielsen severity rating (1 cosmetic to 4 catastrophic) and the screen or element where it happened, which feeds the redesign priority list.
 
-**Counting rules**
-- Count each discrete misstep once. Repeated clicks on the same dead element in a row count as one (note the repeats).
-- Deliberate, verbalized exploration ("I'm just checking what's in here") is not an error.
-- A different path that still works (for example, a different search filter) is not an error.
+**Counting rules:** count each misstep once (clicking the same dead spot three times in a row is one error). If the participant says they're just exploring, or uses a different path that still works, it isn't an error.
 
 ### 3.4 Built in integrity checks
 
@@ -433,13 +398,7 @@ Timestamps in the qualitative fields line up with Error_Log times and milestones
 
 ### 3.7 Planned analysis (for the statistics sprint)
 
-The Summary tab already computes the first pass of each:
-- Independent completion rate per task with **adjusted Wald 95% confidence intervals** (recommended for samples this small).
-- Time on task for successful attempts; the stats sprint should use the geometric mean with log transformed intervals, since task times are right skewed.
-- Mean time to each milestone, to find the slowest phase.
-- Errors per participant, split by category, plus a severity weighted hotspot list from Error_Log.
-- Mean SEQ per task against the published average of about 5.5.
-- Mean SUS with 95% t interval, percentile, grade, and adjective, compared against the 68 benchmark.
+The Summary tab gives a first look at completion rate, average time, errors, SEQ, and SUS for each task. The detailed stats (confidence intervals, geometric mean of task times) will be done in the upcoming statistics sprint.
 
 ---
 
@@ -453,7 +412,7 @@ The questionnaire is `docs/index.html`, a single self contained HTML page with n
 2. Go to **Settings > Pages**. Under *Build and deployment*, set Source to **Deploy from a branch**, Branch to **main**, and Folder to **/docs**. Save.
 3. After about a minute the live URL appears at the top of the Pages settings: `https://<username>.github.io/<repo-name>/`. Put that URL at the top of this README.
 
-Responses are kept in the browser on the moderator's test laptop (no server, so no participant data leaves the device). After each participant the moderator opens *Moderator view* and downloads the CSV (raw ratings plus score, percentile, grade, and adjective), then copies the ratings into the `SUS_Responses` tab of the logging workbook or runs `scripts/score_sus.py` on it.
+Responses are kept in the browser on the moderator's test laptop (no server, so no participant data leaves the device). After each participant the moderator opens *Moderator view* and downloads the CSV (raw ratings plus score, percentile, grade, and adjective), then copies the ratings into the `SUS_Responses` tab of the logging workbook.
 
 ### 4.2 The 10 items (John Brooke, 1996, unaltered)
 
@@ -531,13 +490,13 @@ Sum = 32. SUS = 32 x 2.5 = **80.0**
 
 ### 4.4 From raw score to benchmark: percentile curve, grade, adjective, acceptability
 
-A raw SUS score is **not a percentage**. A 68 sounds like a D but is actually the average across hundreds of studies. To make scores meaningful, every scoring tool in this repository converts the score four ways automatically:
+A raw SUS score is **not a percentage**. A 68 sounds like a D but is actually the average across hundreds of studies. To make scores meaningful, both the survey and the workbook convert the score four ways automatically:
 
 | Conversion | Method | Where it is computed |
 |---|---|---|
-| **Percentile rank** | Normal approximation of the Sauro and Lewis benchmark database: `Percentile = NORMDIST(SUS, 68, 12.5, TRUE) x 100` | Survey result screen, `SUS_Responses` col X, Summary tab, `score_sus.py` |
-| **Curved grade** | Sauro and Lewis curved grading scale (table below) | Same four places |
-| **Adjective rating** | Bangor, Kortum, and Miller adjective bands | Same four places |
+| **Percentile rank** | Normal approximation of the Sauro and Lewis benchmark database: `Percentile = NORMDIST(SUS, 68, 12.5, TRUE) x 100` | Survey result screen, `SUS_Responses` tab, Summary tab |
+| **Curved grade** | Sauro and Lewis curved grading scale (table below) | Survey and workbook |
+| **Adjective rating** | Bangor, Kortum, and Miller adjective bands | Survey and workbook |
 | **Acceptability** | Bangor, Kortum, and Miller: below 50 not acceptable, 50 to 69.9 marginal, 70 and above acceptable | Survey, workbook |
 
 **Lookup table used everywhere** (also in the `SUS_Benchmarks` tab)
@@ -564,20 +523,7 @@ A raw SUS score is **not a percentage**. A 68 sounds like a D but is actually th
 - With 5 participants, always report the mean with its 95% confidence interval and say plainly that it is wide.
 - The percentile is an approximation of a skewed real distribution; it is most accurate between about 40 and 90.
 
-### 4.5 Automated scoring script
-
-`scripts/score_sus.py` re-scores the survey's CSV exports straight from the raw ratings (it ignores any score column in the file, so a corrupted export cannot carry a wrong score forward).
-
-```text
-$ python3 scripts/score_sus.py SUS_all_responses.csv
-ID           SUS  Pctl  Grade  Adjective         Flags
-EX          80.0    83  A-     Good
-P02         50.0     7  F      Poor              same answer on all 10
-...
-n = 5  mean = ...  SD = ...  95% CI = ... to ...
-```
-
-Three independent implementations (survey JavaScript, workbook formulas, Python script) use the same rules, and all three were checked against the worked example (80.0, 83rd percentile, A-), so a scoring bug in one would show up as a mismatch.
+I checked that the survey and the workbook both give 80.0 (83rd percentile, A-) for the worked example, so the scoring matches in both places.
 
 ---
 
@@ -608,30 +554,13 @@ Each required criterion was built into `docs/index.html` and then checked. The m
 | Status messages | 4.1.3 | Score result region uses `role="status"`; results heading receives focus after submit |
 | Reduced motion | 2.3.3 | `prefers-reduced-motion` respected (no animation is used) |
 
-### 5.2 Automated accessibility audit results
+### 5.2 Automated audit
 
-The survey was audited with two independent automated engines on November 16, 2026. Because errors only appear after a failed submit and results only after a successful one, axe was run in all three states of the form.
+I ran Lighthouse (Chrome DevTools) and the axe accessibility checker on the survey. Lighthouse gave an accessibility score of 100, and axe found 0 violations, including after submitting a blank form so the error messages were showing. The first axe run caught a skip link that pointed to the form after it was hidden, so I pointed it at the main content instead. Automated tools don't catch everything, so I'll also do a quick screen reader and keyboard only check during the pilot session.
 
-| Tool | Ruleset | State tested | Violations | Passed rules | Needs review |
-|---|---|---|---|---|---|
-| axe-core 4.14.1 | WCAG 2.0 A/AA, 2.1 A/AA, best practices | Initial load | **0** | 37 | 0 |
-| axe-core 4.14.1 | same | After submitting blank (error summary and 11 inline errors showing) | **0** | 42 | 0 |
-| axe-core 4.14.1 | same | After valid submit (results and moderator table showing) | **0** | 42 | 0 |
-| Lighthouse 12.8.2 | Accessibility category | Initial load | **Score 100 / 100** | | |
-| Lighthouse 12.8.2 | Best practices category | Initial load | **Score 100 / 100** | | |
+### 5.3 Rating matrix design
 
-**What the audit caught and what was fixed.** The first axe run in the results state returned one "needs review" item: the skip link pointed at the form, which is hidden after submitting, so it pointed at nothing. The skip link now targets `<main>`, which is always present. The first Lighthouse run flagged a missing favicon; an inline icon was added. Both reruns came back clean.
-
-**Automated testing is not the whole story.** These tools catch roughly a third to a half of accessibility issues. They cannot judge whether the reading order makes sense, whether legends are understandable when read aloud, or how comfortable the form is to use with a screen reader. So the pilot session includes a manual pass with NVDA (Windows) or VoiceOver (macOS) and a keyboard only pass, recorded in the Notes column.
-
-### 5.3 Why the rating matrix is built from fieldsets instead of a table
-
-Many SUS forms put the 10 items in a `<table>` with radios in the cells. That looks tidy but is hard to use with assistive technology: a screen reader user hears a cell position ("row 3, column 4") instead of the question, has to navigate the table to find column headers, and every radio has to be labeled by hand with ARIA. This instrument keeps the **visual** matrix layout (each statement is a row of five large rating cards, aligned on desktop) but builds each row as a **`<fieldset>` with a `<legend>`** containing one native radio group:
-
-- **Keyboard:** Tab reaches each statement once; Left and Right (or Up and Down) arrows move the rating within that statement; Space selects. This is the native radio pattern, so it behaves the same in every browser and screen reader with no custom key handling.
-- **Screen reader:** entering a row announces the full statement as the group name, then "1, Strongly Disagree, radio button, 1 of 5."
-- **Custom high contrast focus styling:** a 4 px solid purple outline with a 3 px offset and a white halo, applied with `:focus-visible` so it shows for keyboard users without flashing for mouse clicks. It is visible on white, on the selected purple card, and in Windows High Contrast mode (outlines are kept there).
-- **Small screens and zoom:** at narrow widths or 400% zoom, each row reflows into a vertical list of full width options, so the "Strongly Disagree" text never clips and nothing scrolls sideways.
+Instead of putting the 10 items in a table, each statement is its own `<fieldset>` with a `<legend>` and one group of native radio buttons, laid out in a row so it still looks like a matrix. That way Tab goes to each statement once, the arrow keys change the rating, and a screen reader reads the full statement instead of a table cell position. The focus ring is a thick purple outline so keyboard users can always see where they are, and on small screens or high zoom the options stack vertically so nothing gets cut off.
 
 ### 5.4 Test environment audit (physical and procedural)
 
@@ -666,15 +595,15 @@ The same structure also protects against two related patterns:
 **The tradeoff and how this protocol handles it.** Mixed wording has a cost. Sauro and Lewis (2011) compared the standard SUS with an all positive version and found the scores were about the same, but the mixed version led to two kinds of mistakes. Some participants **miss the switch** and answer a negative item as if it were positive. Some researchers **forget to reverse score** the even items, which produces badly wrong results. This protocol keeps the canonical alternating version because the published benchmarks (68 average, the percentile curve, grades) were built on it, and changing the wording would break that comparison. It handles the costs this way:
 
 1. **Participant miscoding:** the survey instructions ask people to read every statement, and each item is shown on its own with its full text as the group label, so it is hard to skim.
-2. **Researcher miscoding:** no one scores by hand. Reverse scoring is coded in three independent places (survey JavaScript, workbook formulas, Python script), and all three produce 80.0 for the worked example, so a mismatch would expose a bug.
-3. **Detection:** the workbook and script flag straightlining and contradictory agreement automatically, and the raw ratings (not just the final score) are exported so any flagged response can be checked.
+2. **Researcher miscoding:** no one scores by hand. Reverse scoring is coded in two places (the survey and the workbook), and both produce 80.0 for the worked example, so a mismatch would expose a bug.
+3. **Detection:** the workbook flags straightlining and contradictory agreement automatically, and the raw ratings (not just the final score) are exported so any flagged response can be checked.
 
 **Front end data integrity.** Psychometric validity depends on the data reaching the spreadsheet unchanged, so the form was designed to protect it:
 - Native radio buttons can only hold the values 1 to 5. Out of range values, typos, and half answers are impossible.
 - The form will not submit with a blank item, so no missing data has to be filled in later with guessed midpoints.
 - The participant ID field asks for a code, not a name, so no identifying information ends up in the response file.
 - Every record gets an ISO timestamp, which can be matched to the session log.
-- The CSV export contains the raw ratings, and `score_sus.py` recalculates from them instead of trusting the exported score.
+- The CSV export contains the raw ratings, so any score can be recalculated and checked.
 - Responses are saved in the browser and can be re-downloaded. If local storage is blocked, the page tells the moderator to download right away so nothing is lost.
 
 **Self critique.** The alternating structure reduces acquiescence but can't remove social desirability bias completely, especially since participants may know a student is behind the study. Stepping away while the SUS is filled in helps. A stronger fix would be to have participants complete the SUS on a separate device with the moderator out of the room. With only 5 participants, one person who misreads a negative item can move the mean a lot, so flagged responses need to be reviewed, not just counted.
@@ -697,7 +626,7 @@ The same structure also protects against two related patterns:
 The result is a system that looks more usable than it is. That is the worst outcome for a benchmark that a redesign will be compared against: an inflated baseline makes the redesign look less effective than it really is.
 
 **How this protocol prevents it.**
-1. **Everything said is scripted.** The moderator may only use the neutral prompts (N1 to N5), assist prompts (A1, A2), and recovery scripts (R1 to R6), word for word. None of them name a menu, button, or direction, and every participant hears the same thing.
+1. **Everything said is scripted.** The moderator may only use the neutral prompts (N1 to N5), assist prompts (A1, A2), and recovery scripts (R1 to R3), word for word. None of them name a menu, button, or direction, and every participant hears the same thing.
 2. **Rules decide when to speak, not judgment.** N1 only after 15 seconds of silence; assists only after 120 seconds with no progress or when the participant would give up. The moderator never decides in the moment that someone "needs a little help."
 3. **Help is measured, not hidden.** Any assist automatically caps Task_Success at 0.5, every prompt is logged by code, and the workbook flags any row where an assist was given but success was marked 1. The timer is never paused.
 4. **Acknowledgements only after "Done."** "Thank you" and "Okay" are said in the same flat tone, and only after the participant ends the task.
@@ -740,7 +669,6 @@ The result is a system that looks more usable than it is. That is the worst outc
 - W3C. (2018). *Web Content Accessibility Guidelines (WCAG) 2.1*. https://www.w3.org/TR/WCAG21/
 - Bangor, A., Kortum, P. T., and Miller, J. T. (2008). An empirical evaluation of the System Usability Scale. *International Journal of Human Computer Interaction, 24*(6), 574 to 594.
 - Ericsson, K. A., and Simon, H. A. (1993). *Protocol Analysis: Verbal Reports as Data* (rev. ed.). MIT Press.
-- Lewis, J. R., and Sauro, J. (2009). The factor structure of the System Usability Scale. *Human Centered Design, HCII 2009*, 94 to 103.
 - Orne, M. T. (1962). On the social psychology of the psychological experiment. *American Psychologist, 17*(11), 776 to 783.
 - Rosenthal, R. (1966). *Experimenter Effects in Behavioral Research*. Appleton Century Crofts.
 - Sauro, J., and Lewis, J. R. (2016). *Quantifying the User Experience* (2nd ed.). Morgan Kaufmann.

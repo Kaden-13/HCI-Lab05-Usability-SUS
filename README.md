@@ -238,7 +238,7 @@ The cards deliberately avoid the interface's exact labels. The Register for Clas
 
 > **Task card T2**
 >
-> You've changed your mind about one of the courses you're signed up for this term, **PE 1094**. You've decided you no longer want to take it.
+> You've changed your mind about one of the courses you're signed up for this term, **ENGL 1010 (Introductory College Writing)**. You've decided you no longer want to take it.
 >
 > Using the Weber State student portal, make it so that course is no longer part of your schedule for this term.
 >

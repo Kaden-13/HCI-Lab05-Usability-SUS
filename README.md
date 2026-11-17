@@ -580,68 +580,30 @@ Instead of putting the 10 items in a table, each statement is its own `<fieldset
 
 ### Q1. Why does the SUS deliberately alternate between positive and negative phrasing across its 10 items, and what cognitive response bias does this structure safeguard against?
 
-**The short answer.** Brooke alternated the wording so participants cannot get through the questionnaire on autopilot, and so a common response bias cancels itself out in the final score. The main bias it protects against is **acquiescence bias** (also called yea saying or agreement bias): the tendency to agree with statements whatever they say.
+Brooke switched back and forth between positive statements ("I thought the system was easy to use") and negative ones ("I found the system unnecessarily complex") so people have to actually read each item instead of clicking down the same column. The main bias this protects against is **acquiescence bias**, also called yea saying, which is the tendency to agree with statements no matter what they say.
 
-**Why acquiescence is a real threat in usability testing.** Acquiescence gets stronger when people are tired, when they don't care much about the questions, and when they feel social pressure to be agreeable. All three are present at the end of a usability session. The participant has just spent half an hour with a friendly moderator, may assume the moderator built the system, and is filling out the last form before leaving. If all ten statements were positive ("easy to use," "well integrated," "confident"), agreeing with everything would push the score toward 100 and make the system look better than it is, and there would be no way to tell polite agreement from real satisfaction.
+This is a real risk in my study. By the time participants get to the SUS, they've spent about 30 minutes with me, they might think I built the site, and it's the last thing before they leave. If all ten statements were positive, someone who just agreed with everything to be polite would push the score close to 100, and I'd have no way to tell that apart from someone who actually liked the system.
 
-**How the alternation works, in measurement terms.** The SUS is a summated rating scale: the ten items are added together because they are all supposed to measure the same underlying thing, perceived usability. Every answer is a mix of that real attitude and some noise, including a person's habit of agreeing. In an all positive scale, that agreeing habit pushes every item in the same direction, so it adds up instead of averaging out. It even makes the scale look more reliable than it is, because the items agree with each other partly for the wrong reason. With balanced keying, half the items are reverse scored. A participant's extra tendency to agree adds points on the five positive items and takes the same number away on the five negative items, so in the total it mostly cancels out. What is left is closer to the real attitude.
+Because the even items are reverse scored, extra agreeing adds points on the positive items and takes the same amount away on the negative ones, so it mostly cancels out. Someone who answers 5 on everything gets a 50, not a 100, which is easy to spot. It also works as an attention check: strongly agreeing that the site was easy to use *and* unnecessarily complex doesn't make sense.
 
-The same structure also protects against two related patterns:
-- **Straightlining** (answering the same column all the way down). With reverse scoring, all 5s produce a SUS of 50, not 100, and all 1s also produce 50. A straightliner lands at "Poor" instead of artificially high or low, and the pattern is easy to spot.
-- **Extreme response style** (only using 1s and 5s). Because extremes on positive and negative items cancel, this style can't inflate the score on its own.
+There's a downside. Sauro and Lewis (2011) found that people sometimes miss the switch and answer a negative item like a positive one, and researchers sometimes forget to reverse score. I kept the original version anyway because the 68 average and the grade scale are based on it. To deal with the downsides, the survey tells people to read every statement, the scoring is automatic in both the survey and the spreadsheet (both give 80 for the worked example), and the spreadsheet flags anyone who gives the same answer on all 10 or agrees with opposite statements. The form also won't submit with blanks, only allows 1 to 5, and exports the raw answers so I can recheck any score.
 
-**It also works as an attention check.** Someone who strongly agrees that the system was "easy to use" (item 3) and also strongly agrees it was "unnecessarily complex" (item 2) is giving contradictory answers. That flags the response for review.
+One thing I can't fully fix is people wanting to be nice. Stepping away while they fill it out helps, but with only 5 participants, one person misreading a negative item can move the average a lot.
 
-**The tradeoff and how this protocol handles it.** Mixed wording has a cost. Sauro and Lewis (2011) compared the standard SUS with an all positive version and found the scores were about the same, but the mixed version led to two kinds of mistakes. Some participants **miss the switch** and answer a negative item as if it were positive. Some researchers **forget to reverse score** the even items, which produces badly wrong results. This protocol keeps the canonical alternating version because the published benchmarks (68 average, the percentile curve, grades) were built on it, and changing the wording would break that comparison. It handles the costs this way:
+### Q2. How can a moderator's subtle verbal cues or body language during a Think Aloud session corrupt time on task and error count data, and how does this protocol prevent this experimental bias?
 
-1. **Participant miscoding:** the survey instructions ask people to read every statement, and each item is shown on its own with its full text as the group label, so it is hard to skim.
-2. **Researcher miscoding:** no one scores by hand. Reverse scoring is coded in two places (the survey and the workbook), and both produce 80.0 for the worked example, so a mismatch would expose a bug.
-3. **Detection:** the workbook flags straightlining and contradictory agreement automatically, and the raw ratings (not just the final score) are exported so any flagged response can be checked.
+During a think aloud session, participants are constantly watching the moderator for hints, even if they don't realize it. Small things like saying "mm hmm" when they move toward the right link, pausing when they go the wrong way, leaning forward, glancing at part of the screen, or writing notes only after mistakes all tell them whether they're on track. It's basically the Clever Hans effect: the horse that seemed to do math was really just reading his trainer's body language.
 
-**Front end data integrity.** Psychometric validity depends on the data reaching the spreadsheet unchanged, so the form was designed to protect it:
-- Native radio buttons can only hold the values 1 to 5. Out of range values, typos, and half answers are impossible.
-- The form will not submit with a blank item, so no missing data has to be filled in later with guessed midpoints.
-- The participant ID field asks for a code, not a name, so no identifying information ends up in the response file.
-- Every record gets an ISO timestamp, which can be matched to the session log.
-- The CSV export contains the raw ratings, so any score can be recalculated and checked.
-- Responses are saved in the browser and can be re-downloaded. If local storage is blocked, the page tells the moderator to download right away so nothing is lost.
+That messes up the data in a few ways. **Time on task** gets shorter when a cue saves them from exploring, or longer when they stop to check my reaction. **Error counts** go down because they back out of wrong paths before actually committing, so mistakes real users would make never get logged. **Task success** gets inflated because a task finished thanks to a hint gets counted as independent. The SEQ and SUS ratings go up too. The end result is a baseline that looks better than the system really is, which would make a future redesign look less effective than it is.
 
-**Self critique.** The alternating structure reduces acquiescence but can't remove social desirability bias completely, especially since participants may know a student is behind the study. Stepping away while the SUS is filled in helps. A stronger fix would be to have participants complete the SUS on a separate device with the moderator out of the room. With only 5 participants, one person who misreads a negative item can move the mean a lot, so flagged responses need to be reviewed, not just counted.
+My protocol tries to prevent this by:
+- **Scripting everything I'm allowed to say.** I can only use the prompts in the prompt bank, word for word, and none of them name a button or point a direction.
+- **Using rules for when to speak.** I only prompt after 15 seconds of silence, and only give an assist after 120 seconds with no progress. Any assist drops success to 0.5 and gets logged, and the spreadsheet flags it if someone marks success as 1 anyway.
+- **Only saying "thank you" after they say "Done,"** in the same tone every time.
+- **Sitting behind and to the side**, keeping my hands off the screen, and taking notes the whole time so a burst of writing doesn't signal a mistake.
+- **Keeping the task cards free of interface words** like "Add" or "Drop," and starting and stopping the timer at fixed points.
 
-### Q2. How can a moderator's subtle verbal cues or body language during a Think Aloud session corrupt time on task and error count data, and how does this protocol prevent that bias?
-
-**Why it happens.** A participant in a think aloud session is in an uncertain situation, being watched while working on an unfamiliar system, so they constantly look for clues about how they are doing. Psychology has names for this. **Demand characteristics** (Orne, 1962) are the cues that tell a participant what behavior is expected. The **experimenter expectancy effect** (Rosenthal) describes how a researcher who expects a result can produce it without meaning to. The classic example is **Clever Hans**, the horse that seemed to do arithmetic but was actually reading tiny, unconscious changes in his trainer's posture when he reached the right answer. A moderator who knows where the "right" button is plays the trainer's role.
-
-**What the cues look like.**
-- **Verbal:** an "mm hmm" or "okay" when the participant moves toward the right link; a pause or "hmm" when they head the wrong way; follow up questions only after mistakes ("Why did you click that?"); a slightly different tone when reading the task card to different people.
-- **Nonverbal:** leaning forward as the participant gets close; glancing at a part of the screen; shifting in the chair or sighing during a wrong path; writing notes only after errors; where the moderator's eyes rest.
-- **Timing:** rescuing too soon, filling a silence, or giving help at different points for different people.
-
-**How each metric gets corrupted.**
-- **Time on task** gets shorter than it should when participants skip exploration they would have done alone because a cue pointed the way. It gets longer when they stop to check the moderator's face or ask for approval. Either way, the variation comes from the moderator, not the interface.
-- **Error count** goes down because participants back out of wrong paths *before* committing, when they notice disapproval. The missteps real users would make never get logged, so the real problems become invisible.
-- **Task success** gets inflated, since a task finished thanks to an accidental hint is logged as independent (1) instead of assisted (0.5).
-- **SEQ and SUS** get inflated too, because a participant who felt guided rates the task as easier, and one who wants to please the moderator rates the system more kindly.
-
-The result is a system that looks more usable than it is. That is the worst outcome for a benchmark that a redesign will be compared against: an inflated baseline makes the redesign look less effective than it really is.
-
-**How this protocol prevents it.**
-1. **Everything said is scripted.** The moderator may only use the neutral prompts (N1 to N5), assist prompts (A1, A2), and recovery scripts (R1 to R3), word for word. None of them name a menu, button, or direction, and every participant hears the same thing.
-2. **Rules decide when to speak, not judgment.** N1 only after 15 seconds of silence; assists only after 120 seconds with no progress or when the participant would give up. The moderator never decides in the moment that someone "needs a little help."
-3. **Help is measured, not hidden.** Any assist automatically caps Task_Success at 0.5, every prompt is logged by code, and the workbook flags any row where an assist was given but success was marked 1. The timer is never paused.
-4. **Acknowledgements only after "Done."** "Thank you" and "Okay" are said in the same flat tone, and only after the participant ends the task.
-5. **Seating, hands, and notes.** The moderator sits behind and to the side, out of the participant's view, keeps hands away from the screen, and logs constantly (milestones, error codes, timestamps). Because writing never stops, a burst of note taking doesn't signal "you just made a mistake."
-6. **Expectations set up front.** The CTA briefing tells participants the moderator will stay quiet and can't answer questions, so silence isn't read as disapproval and participants spend less effort reading the moderator.
-7. **Task cards don't give away labels.** The cards avoid the interface's own words ("Add," "Drop," "Search"), so the wording itself isn't a cue.
-8. **Objective start and stop points.** The timer starts on "Begin" and stops at a defined terminal action or the 300 second cap, so the moderator can't stretch or shrink a task. Milestones are defined by what is on screen, not the moderator's impression.
-9. **Practice task.** The unlogged library hours task lets participants learn to think aloud before the timed tasks, so the first real task isn't slower just from learning the method.
-10. **Checks on the moderator.** One pilot session is run with a non participant, and a second team member reviews a sample of recordings for any unscripted cues before the data goes to the stats sprint.
-
-**Self critique and remaining risks.**
-- **I am a biased moderator.** I ran the Phase 1 audit and the Lab 03 cognitive audit on this exact system, so I know where the problems are and I *expect* participants to struggle on the results table. That is exactly the setup for expectancy effects. The best fix is to have a teammate who hasn't studied the portal moderate while I only take notes. If that isn't possible, the recording review in step 10 matters even more.
-- **The N1 prompt is itself an intervention.** Asking "What are you thinking right now?" breaks concentration and adds a few seconds. It is the same for everyone and it is logged, but participants who go quiet more often get prompted more, and that adds time. The stats sprint can check whether N1 counts relate to task time.
-- **Think aloud changes behavior.** Talking while working slows people down and can make them more careful, which may lower error counts compared with silent use. Times from this study are comparable across participants and with a future redesign tested the same way, but not with times from silent tests.
-- **The live portal adds noise the moderator can't control:** seat counts change between sessions, and the portal can time out. Logging SYS faults separately keeps those from being counted against participants, but a sandbox term would be better.
+The biggest risk is honestly me. I already audited this portal in Phase 1 and Lab 03, so I expect people to get stuck on the results table, and that expectation could leak out. The best fix would be having a teammate moderate while I take notes, or at least having someone review a few recordings for cues. Also, the "What are you thinking right now?" prompt itself interrupts people and adds time, and thinking aloud slows everyone down in general, so these times should only be compared to other think aloud sessions.
 
 ---
 
@@ -662,13 +624,10 @@ The result is a system that looks more usable than it is. That is the worst outc
 
 ## Appendix B: References
 
-- Brooke, J. (1996). SUS: A "quick and dirty" usability scale. In P. W. Jordan, B. Thomas, B. A. Weerdmeester, and I. L. McClelland (Eds.), *Usability Evaluation in Industry* (pp. 189 to 194). Taylor and Francis.
-- Bangor, A., Kortum, P., and Miller, J. (2009). Determining what individual SUS scores mean: Adding an adjective rating scale. *Journal of Usability Studies, 4*(3), 114 to 123.
-- Sauro, J., and Lewis, J. R. (2011). When designing usability questionnaires, does it hurt to be positive? *Proceedings of CHI 2011*, 2215 to 2224.
-- Sauro, J., and Dumas, J. S. (2009). Comparison of three one question, post task usability questionnaires. *Proceedings of CHI 2009*, 1599 to 1608.
-- W3C. (2018). *Web Content Accessibility Guidelines (WCAG) 2.1*. https://www.w3.org/TR/WCAG21/
 - Bangor, A., Kortum, P. T., and Miller, J. T. (2008). An empirical evaluation of the System Usability Scale. *International Journal of Human Computer Interaction, 24*(6), 574 to 594.
-- Ericsson, K. A., and Simon, H. A. (1993). *Protocol Analysis: Verbal Reports as Data* (rev. ed.). MIT Press.
-- Orne, M. T. (1962). On the social psychology of the psychological experiment. *American Psychologist, 17*(11), 776 to 783.
-- Rosenthal, R. (1966). *Experimenter Effects in Behavioral Research*. Appleton Century Crofts.
+- Bangor, A., Kortum, P., and Miller, J. (2009). Determining what individual SUS scores mean: Adding an adjective rating scale. *Journal of Usability Studies, 4*(3), 114 to 123.
+- Brooke, J. (1996). SUS: A "quick and dirty" usability scale. In P. W. Jordan, B. Thomas, B. A. Weerdmeester, and I. L. McClelland (Eds.), *Usability Evaluation in Industry* (pp. 189 to 194). Taylor and Francis.
+- Sauro, J., and Dumas, J. S. (2009). Comparison of three one question, post task usability questionnaires. *Proceedings of CHI 2009*, 1599 to 1608.
+- Sauro, J., and Lewis, J. R. (2011). When designing usability questionnaires, does it hurt to be positive? *Proceedings of CHI 2011*, 2215 to 2224.
 - Sauro, J., and Lewis, J. R. (2016). *Quantifying the User Experience* (2nd ed.). Morgan Kaufmann.
+- W3C. (2018). *Web Content Accessibility Guidelines (WCAG) 2.1*. https://www.w3.org/TR/WCAG21/
